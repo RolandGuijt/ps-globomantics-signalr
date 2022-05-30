@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Auction>
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-2">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th class="textright">Current bid</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var auction in Model)
+                {
+                    <tr id="@auction.Id-tr" class="align-middle">
+                        <td>@auction.ItemName</td>
+                        <td id="@auction.Id-bidtext" class="bid">@auction.CurrentBid</td>
+                        <td class="bid-form-td">
+                            <input id="@auction.Id-input" class="bid-input" type="number" asp-for="@auction.CurrentBid" />
+                            <button class="btn btn-primary" type="button" onclick="submitBid(@auction.Id)">Bid</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

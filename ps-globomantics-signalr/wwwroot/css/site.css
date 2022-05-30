@@ -1,0 +1,57 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 17px;
+}
+
+.highlight {
+    font-weight: bold;
+    color: #ff006a;
+}
+
+.bid {
+    font-weight: bold;
+    color: green;
+    text-align: right;
+}
+
+.bid-input {
+    width: 4em;
+    font-size: 0.8em;
+    text-align: right;
+}
+
+.bid-form-td {
+    width: 140px;
+}
+
+.textright {
+    text-align: right;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    opacity: 1
+}
+
+.titlecol {
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: white;
+    }
+
+    50% {
+        background-color: yellow;
+    }
+
+    100% {
+        background-color: white;
+    }
+}
+
+.animate-highlight {
+    animation-name: highlight;
+    animation-duration: 2s;
+}
