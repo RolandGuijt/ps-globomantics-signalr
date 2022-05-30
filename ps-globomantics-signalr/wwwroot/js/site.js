@@ -8,7 +8,7 @@
         const bidText = document.getElementById(auctionId + "-bidtext");
         bidText.innerHTML = newBid;
         //start animation
-        tr.classList.add("animate-highlight");
+        setTimeout(() => tr.classList.add("animate-highlight"), 20);
     });
 
     connection.start().catch((err) => {
