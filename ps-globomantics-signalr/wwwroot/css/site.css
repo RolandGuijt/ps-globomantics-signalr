@@ -38,16 +38,8 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 @keyframes highlight {
-    0% {
-        background-color: white;
-    }
-
     50% {
         background-color: yellow;
-    }
-
-    100% {
-        background-color: white;
     }
 }
 
