@@ -2,13 +2,15 @@
     var connection = new signalR.HubConnectionBuilder().withUrl("/auctionHub").build();
 
     connection.on("ReceiveNewBid", ({ auctionId, newBid }) => {
-        const tr = document.getElementById(auctionId + "-tr");   
-        tr.classList.remove("animate-highlight");
+        const tr = document.getElementById(auctionId + "-tr");
+        const input = document.getElementById(auctionId + "-input");
+        //start animation
+        setTimeout(() => tr.classList.add("animate-highlight"), 20);
+        setTimeout(() => tr.classList.remove("animate-highlight"), 2000);
 
         const bidText = document.getElementById(auctionId + "-bidtext");
         bidText.innerHTML = newBid;
-        //start animation
-        setTimeout(() => tr.classList.add("animate-highlight"), 20);
+        input.value = newBid + 1;
     });
 
     connection.on("ReceiveNewAuction", ({ id, itemName, currentBid }) => {
