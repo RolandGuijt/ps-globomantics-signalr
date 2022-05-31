@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="col-md-10 col-md-offset-2">
-        <table class="table">
+        <table id="table" class="table">
             <thead>
                 <tr>
                     <th>Item</th>
@@ -11,13 +11,18 @@
                 </tr>
             </thead>
             <tbody>
+                <tr>
+                    <td><input id="add-itemname" type="text" /></td>
+                    <td><input id="add-currentbid" class="bid-input float-end" type="number" /></td>
+                    <td><button type="button" class="btn btn-primary" onclick="submitAuction()">Add</button></td>
+                </tr>
                 @foreach (var auction in Model)
                 {
                     <tr id="@auction.Id-tr" class="align-middle">
                         <td>@auction.ItemName</td>
                         <td id="@auction.Id-bidtext" class="bid">@auction.CurrentBid</td>
                         <td class="bid-form-td">
-                            <input id="@auction.Id-input" class="bid-input" type="number" asp-for="@auction.CurrentBid" />
+                            <input id="@auction.Id-input" class="bid-input" type="number" value="@(auction.CurrentBid+1)" />
                             <button class="btn btn-primary" type="button" onclick="submitBid(@auction.Id)">Bid</button>
                         </td>
                     </tr>

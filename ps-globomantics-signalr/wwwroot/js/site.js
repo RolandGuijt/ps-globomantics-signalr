@@ -11,6 +11,18 @@
         setTimeout(() => tr.classList.add("animate-highlight"), 20);
     });
 
+    connection.on("ReceiveNewAuction", ({ id, itemName, currentBid }) => {
+        var tbody = document.querySelector("#table>tbody");
+        tbody.innerHTML += `<tr id="${id}-tr" class="align-middle">
+                                <td>${itemName}</td >
+                                <td id="${id}-bidtext" class="bid">${currentBid}</td >
+                                <td class="bid-form-td">
+                                    <input id="${id}-input" class="bid-input" type="number" value="${currentBid + 1}" />
+                                    <button class="btn btn-primary" type="button" onclick="submitBid(${id})">Bid</button>
+                                </td>
+                            </tr>`;
+    });
+
     connection.start().catch((err) => {
         return console.error(err.toString());
     });
@@ -29,4 +41,16 @@ const submitBid = (auctionId) => {
         }
     });
     connection.invoke("NotifyNewBid", { auctionId: parseInt(auctionId), newBid: parseInt(bid) });
+}
+
+const submitAuction = () => {
+    const itemName = document.getElementById("add-itemname").value;
+    const currentBid = document.getElementById("add-currentbid").value;
+    fetch("/auction", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ itemName, currentBid })
+    });
 }
