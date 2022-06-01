@@ -42,6 +42,8 @@ const submitBid = (auctionId) => {
             'Content-Type': 'application/json'
         }
     });
+    if (connection.state !== signalR.HubConnectionState.Connected)
+        location.reload();
     connection.invoke("NotifyNewBid", { auctionId: parseInt(auctionId), newBid: parseInt(bid) });
 }
 
