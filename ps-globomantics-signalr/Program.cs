@@ -34,6 +34,6 @@ app.MapPost("auction/{auctionId}/newbid", (int auctionId, int currentBid, IAucti
     auctionRepo.NewBid(auctionId, currentBid);
 });
 
-app.MapHub<AuctionHub>("/auctionHub");
+app.MapHub<AuctionHub>("/auctionhub");
 
 app.Run();

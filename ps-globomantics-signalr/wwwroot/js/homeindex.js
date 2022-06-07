@@ -1,11 +1,11 @@
 ﻿const InitializeSignalRConnection = () => {
-    var connection = new signalR.HubConnectionBuilder().withUrl("/auctionHub").build();
+    var connection = new signalR.HubConnectionBuilder().withUrl("/auctionhub").build();
 
     connection.on("ReceiveNewBid", ({ auctionId, newBid }) => {
         const tr = document.getElementById(auctionId + "-tr");
         const input = document.getElementById(auctionId + "-input");
         //start animation
-        setTimeout(() => tr.classList.add("animate-highlight"), 20);
+        tr.classList.add("animate-highlight");
         setTimeout(() => tr.classList.remove("animate-highlight"), 2000);
 
         const bidText = document.getElementById(auctionId + "-bidtext");
