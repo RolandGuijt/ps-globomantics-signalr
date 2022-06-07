@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ps-globomantics-signalr", "ps-globomantics-signalr\ps-globomantics-signalr.csproj", "{4830696F-9C9D-40F9-A63C-E801E24D2A44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ps-globomantics-signalr", "ps-globomantics-signalr\ps-globomantics-signalr.csproj", "{4830696F-9C9D-40F9-A63C-E801E24D2A44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient", "ConsoleClient\ConsoleClient.csproj", "{F777952C-4C85-42D3-8339-3E15B1B71479}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{4830696F-9C9D-40F9-A63C-E801E24D2A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4830696F-9C9D-40F9-A63C-E801E24D2A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4830696F-9C9D-40F9-A63C-E801E24D2A44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F777952C-4C85-42D3-8339-3E15B1B71479}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F777952C-4C85-42D3-8339-3E15B1B71479}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F777952C-4C85-42D3-8339-3E15B1B71479}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F777952C-4C85-42D3-8339-3E15B1B71479}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

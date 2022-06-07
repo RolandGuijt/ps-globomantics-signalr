@@ -29,6 +29,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapGet("/auctions", (IAuctionRepo auctionRepo) =>
+{
+    return auctionRepo.GetAll();
+});
+
 app.MapPost("auction/{auctionId}/newbid", (int auctionId, int currentBid, IAuctionRepo auctionRepo) =>
 {
     auctionRepo.NewBid(auctionId, currentBid);
