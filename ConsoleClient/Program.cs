@@ -15,7 +15,7 @@ foreach (var auction in auctions)
 }
 
 var connection = new HubConnectionBuilder()
-    .WithUrl("https://localhost:7241/auctionhub")
+    .WithUrl("https://localhost:7241/auctionhub", )
     .Build();
 
 connection.On("ReceiveNewBid", (AuctionNotify auctionNotify) => {
@@ -34,15 +34,20 @@ catch (Exception ex)
     Console.WriteLine(ex.Message);
 }
 
-while (true)
+try
 {
-    Console.WriteLine("Auction id?");
-    var id = Console.ReadLine();
-    Console.WriteLine($"New bid for auction {id}?");
-    var bid = Console.ReadLine();
-    await connection.InvokeAsync("NotifyNewBid", 
-        new { AuctionId = int.Parse(id!), NewBid = int.Parse(bid!) });
-    Console.WriteLine("Bid placed");
+    while (true)
+    {
+        Console.WriteLine("Auction id?");
+        var id = Console.ReadLine();
+        Console.WriteLine($"New bid for auction {id}?");
+        var bid = Console.ReadLine();
+        await connection.InvokeAsync("NotifyNewBid",
+            new { AuctionId = int.Parse(id!), NewBid = int.Parse(bid!) });
+        Console.WriteLine("Bid placed");
+    }
 }
-
-await connection.StopAsync();
+finally
+{
+    await connection.StopAsync();
+}
