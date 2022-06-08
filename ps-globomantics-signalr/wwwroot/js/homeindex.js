@@ -25,10 +25,10 @@
                             </tr>`;
     });
 
-    connection.on("NotifyOverbid", ({ auctionId }) => {
+    connection.on("NotifyOutbid", ({ auctionId }) => {
         const tr = document.getElementById(auctionId + "-tr");
-        if (!tr.classList.contains("overbid"))
-            tr.classList.add("overbid");
+        if (!tr.classList.contains("outbid"))
+            tr.classList.add("outbid");
     });
 
     connection.start().catch((err) => {
@@ -42,7 +42,7 @@ const connection = InitializeSignalRConnection();
 
 const submitBid = (auctionId) => {
     const tr = document.getElementById(auctionId + "-tr");
-    tr.classList.remove("overbid");
+    tr.classList.remove("outbid");
 
     const bid = document.getElementById(auctionId + "-input").value;
     fetch("/auction/" + auctionId + "/newbid?currentBid=" + bid, {

@@ -48,6 +48,6 @@ input[type=number]::-webkit-inner-spin-button {
     animation-duration: 2s;
 }
 
-.overbid {
+.outbid {
     background-color: red;
 }
