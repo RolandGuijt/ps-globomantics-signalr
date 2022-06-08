@@ -1,32 +1,35 @@
 ﻿const InitializeSignalRConnection = () => {
-    var connection = new signalR.HubConnectionBuilder().withUrl("/auctionHub").build();
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/auctionHub")
+        .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
+        .build();
 
-    connection.on("ReceiveNewBid", ({ auctionId, newBid }) => {
-        const tr = document.getElementById(auctionId + "-tr");  
-        const input = document.getElementById(auctionId + "-input");
+    connection.on("ReceiveNewBid", ({ AuctionId, NewBid }) => {
+        const tr = document.getElementById(AuctionId + "-tr");  
+        const input = document.getElementById(AuctionId + "-input");
         //start animation
         setTimeout(() => tr.classList.add("animate-highlight"), 20);
         setTimeout(() => tr.classList.remove("animate-highlight"), 2000);
 
-        const bidText = document.getElementById(auctionId + "-bidtext");
-        bidText.innerHTML = newBid;
-        input.value = newBid + 1;
+        const bidText = document.getElementById(AuctionId + "-bidtext");
+        bidText.innerHTML = NewBid;
+        input.value = NewBid + 1;
     });
 
-    connection.on("ReceiveNewAuction", ({ id, itemName, currentBid }) => {
+    connection.on("ReceiveNewAuction", ({ Id, ItemName, CurrentBid }) => {
         var tbody = document.querySelector("#table>tbody");
-        tbody.innerHTML += `<tr id="${id}-tr" class="align-middle">
-                                <td>${itemName}</td >
-                                <td id="${id}-bidtext" class="bid">${currentBid}</td >
+        tbody.innerHTML += `<tr id="${Id}-tr" class="align-middle">
+                                <td>${ItemName}</td >
+                                <td id="${Id}-bidtext" class="bid">${CurrentBid}</td >
                                 <td class="bid-form-td">
-                                    <input id="${id}-input" class="bid-input" type="number" value="${currentBid + 1}" />
-                                    <button class="btn btn-primary" type="button" onclick="submitBid(${id})">Bid</button>
+                                    <input id="${Id}-input" class="bid-input" type="number" value="${CurrentBid + 1}" />
+                                    <button class="btn btn-primary" type="button" onclick="submitBid(${Id})">Bid</button>
                                 </td>
                             </tr>`;
     });
 
-    connection.on("NotifyOutbid", ({ auctionId }) => {
-        const tr = document.getElementById(auctionId + "-tr");
+    connection.on("NotifyOutbid", ({ AuctionId }) => {
+        const tr = document.getElementById(AuctionId + "-tr");
         if (!tr.classList.contains("outbid"))
             tr.classList.add("outbid");
     });
@@ -51,7 +54,7 @@ const submitBid = (auctionId) => {
             'Content-Type': 'application/json'
         }
     });
-    connection.invoke("NotifyNewBid", { auctionId: parseInt(auctionId), newBid: parseInt(bid) });
+    connection.invoke("NotifyNewBid", { AuctionId: parseInt(auctionId), NewBid: parseInt(bid) });
 }
 
 const submitAuction = () => {

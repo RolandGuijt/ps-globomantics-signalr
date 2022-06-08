@@ -7,4 +7,8 @@
     <RootNamespace>ps_globomantics_signalr</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="6.0.5" />
+  </ItemGroup>
+
 </Project>
