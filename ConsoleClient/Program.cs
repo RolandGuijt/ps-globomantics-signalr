@@ -1,8 +1,23 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using IdentityModel.Client;
+using Microsoft.AspNetCore.SignalR.Client;
 using System.Net.Http.Json;
+
+using var tokenClient = new HttpClient();
+
+var tokenResponse = await tokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+{
+    Address = "https://demo.duendesoftware.com/connect/token",
+
+    ClientId = "m2m",
+    ClientSecret = "secret",
+    Scope = "api"
+});
+var accessToken = tokenResponse.AccessToken;
 
 using var httpClient = new HttpClient();
 httpClient.BaseAddress = new Uri("https://localhost:7241");
+httpClient.SetBearerToken(accessToken);
+
 var response = await httpClient.GetAsync("/auctions");
 var auctions = await response.Content.ReadFromJsonAsync<Auction[]>();
 
@@ -15,7 +30,8 @@ foreach (var auction in auctions)
 }
 
 var connection = new HubConnectionBuilder()
-    .WithUrl("https://localhost:7241/auctionhub", )
+    .WithUrl("https://localhost:7241/auctionhub",
+        o => o.AccessTokenProvider = () => Task.FromResult(accessToken))
     .Build();
 
 connection.On("ReceiveNewBid", (AuctionNotify auctionNotify) => {

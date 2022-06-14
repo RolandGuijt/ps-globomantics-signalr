@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ps-globomantics-signalr", "ps-globomantics-signalr\ps-globomantics-signalr.csproj", "{4830696F-9C9D-40F9-A63C-E801E24D2A44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient", "ConsoleClient\ConsoleClient.csproj", "{F777952C-4C85-42D3-8339-3E15B1B71479}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClient", "ConsoleClient\ConsoleClient.csproj", "{F777952C-4C85-42D3-8339-3E15B1B71479}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
