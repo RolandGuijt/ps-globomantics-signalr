@@ -15,7 +15,7 @@ foreach (var auction in auctions)
 }
 
 var connection = new HubConnectionBuilder()
-    .WithUrl("https://localhost:7241/auctionhub", )
+    .WithUrl("https://localhost:7241/auctionhub")
     .Build();
 
 connection.On("ReceiveNewBid", (AuctionNotify auctionNotify) => {
