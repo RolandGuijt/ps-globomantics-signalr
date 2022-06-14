@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ps_globomantics_signalr.Models;
 using ps_globomantics_signalr.Repositories;
 using System.Diagnostics;
@@ -13,7 +14,7 @@ namespace ps_globomantics_signalr.Controllers
         {
             _AuctionRepo = auctionRepo;
         }
-
+        [Authorize]
         public IActionResult Index()
         {
             var auctions = _AuctionRepo.GetAll();
