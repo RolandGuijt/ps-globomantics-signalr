@@ -4,6 +4,7 @@ using ps_globomantics_signalr.Models;
 
 namespace ps_globomantics_signalr.Hubs
 {
+    [Authorize]
     public class AuctionHub: Hub
     {
         [Authorize(policy:"AdminRequired")]

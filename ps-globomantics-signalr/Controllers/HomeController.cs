@@ -6,6 +6,7 @@ using System.Diagnostics;
 
 namespace ps_globomantics_signalr.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IAuctionRepo _AuctionRepo;
@@ -14,7 +15,6 @@ namespace ps_globomantics_signalr.Controllers
         {
             _AuctionRepo = auctionRepo;
         }
-        [Authorize]
         public IActionResult Index()
         {
             var auctions = _AuctionRepo.GetAll();
