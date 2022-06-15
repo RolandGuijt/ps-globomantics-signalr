@@ -7,4 +7,8 @@
     <RootNamespace>ps_globomantics_signalr</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Duende.BFF" Version="1.2.2" />
+  </ItemGroup>
+
 </Project>

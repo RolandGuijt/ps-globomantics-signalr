@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ps_globomantics_signalr.Models;
 using ps_globomantics_signalr.Repositories;
 using System.Diagnostics;
 
 namespace ps_globomantics_signalr.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IAuctionRepo _AuctionRepo;

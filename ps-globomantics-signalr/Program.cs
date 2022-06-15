@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.SignalR;
 using ps_globomantics_signalr.Hubs;
 using ps_globomantics_signalr.Models;
@@ -9,6 +10,47 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR(o => o.EnableDetailedErrors = true);
 builder.Services.AddSingleton<IAuctionRepo, AuctionMemoryRepo>();
+
+builder.Services.AddBff(o => o.ManagementBasePath = "/account")
+    .AddServerSideSessions();
+
+builder.Services.AddAuthentication(o =>
+{
+    o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    o.DefaultChallengeScheme = "oidc";
+    o.DefaultSignOutScheme = "oidc";
+})
+    .AddCookie()
+    .AddOpenIdConnect("oidc", options =>
+    {
+        options.Authority = "https://demo.duendesoftware.com";
+
+        // confidential client using code flow + PKCE
+        options.ClientId = "interactive.confidential";
+        options.ClientSecret = "secret";
+        options.ResponseType = "code";
+        options.UsePkce = true;
+
+        // query response type is compatible with strict SameSite mode
+        options.ResponseMode = "query";
+
+        // get claims without mappings
+        options.MapInboundClaims = false;
+        options.GetClaimsFromUserInfoEndpoint = true;
+
+        // save tokens into authentication session
+        // to enable automatic token management
+        options.SaveTokens = true;
+
+        // request scopes
+        options.Scope.Clear();
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.Scope.Add("api");
+
+        // and refresh token
+        options.Scope.Add("offline_access");
+    });
 
 var app = builder.Build();
 
@@ -24,7 +66,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseBff();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -41,6 +85,8 @@ app.MapPost("auction", (Auction auction, IAuctionRepo auctionRepo, IHubContext<A
     auctionRepo.AddAuction(auction);
     hubContext.Clients.All.SendAsync("ReceiveNewAuction", auction);
 });
+
+app.UseEndpoints(e => e.MapBffManagementEndpoints());
 
 app.MapHub<AuctionHub>("/auctionHub");
 
