@@ -11,8 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR(o => o.EnableDetailedErrors = true);
 builder.Services.AddSingleton<IAuctionRepo, AuctionMemoryRepo>();
 
-builder.Services.AddBff(o => o.ManagementBasePath = "/account")
-    .AddServerSideSessions();
+builder.Services.AddBff(o => o.ManagementBasePath = "/account");
 
 builder.Services.AddAuthentication(o =>
 {
@@ -66,7 +65,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseBff();
 
 app.UseAuthentication();
 app.UseAuthorization();
