@@ -22,7 +22,7 @@ class MessagePackHubProtocol {
         /** The name of the protocol. This is used by SignalR to resolve the protocol between the client and server. */
         this.name = "messagepack";
         /** The version of the protocol. */
-        this.version = 1;
+        this.version = 2;
         /** The TransferFormat of the protocol. */
         this.transferFormat = signalr_1.TransferFormat.Binary;
         this._errorResult = 1;
@@ -39,7 +39,7 @@ class MessagePackHubProtocol {
      */
     parseMessages(input, logger) {
         // The interface does allow "string" to be passed in, but this implementation does not. So let's throw a useful error.
-        if (!(Utils_1.isArrayBuffer(input))) {
+        if (!((0, Utils_1.isArrayBuffer)(input))) {
             throw new Error("Invalid input for MessagePack hub protocol. Expected an ArrayBuffer.");
         }
         if (logger === null) {
@@ -75,6 +75,12 @@ class MessagePackHubProtocol {
                 return BinaryMessageFormat_1.BinaryMessageFormat.write(SERIALIZED_PING_MESSAGE);
             case signalr_1.MessageType.CancelInvocation:
                 return this._writeCancelInvocation(message);
+            case signalr_1.MessageType.Close:
+                return this._writeClose();
+            case signalr_1.MessageType.Ack:
+                return this._writeAck(message);
+            case signalr_1.MessageType.Sequence:
+                return this._writeSequence(message);
             default:
                 throw new Error("Invalid message type.");
         }
@@ -99,6 +105,10 @@ class MessagePackHubProtocol {
                 return this._createPingMessage(properties);
             case signalr_1.MessageType.Close:
                 return this._createCloseMessage(properties);
+            case signalr_1.MessageType.Ack:
+                return this._createAckMessage(properties);
+            case signalr_1.MessageType.Sequence:
+                return this._createSequenceMessage(properties);
             default:
                 // Future protocol changes can add message types, old clients can ignore them
                 logger.log(signalr_1.LogLevel.Information, "Unknown message type '" + messageType + "' ignored.");
@@ -193,6 +203,26 @@ class MessagePackHubProtocol {
         };
         return completionMessage;
     }
+    _createAckMessage(properties) {
+        // check minimum length to allow protocol to add items to the end of objects in future releases
+        if (properties.length < 1) {
+            throw new Error("Invalid payload for Ack message.");
+        }
+        return {
+            sequenceId: properties[1],
+            type: signalr_1.MessageType.Ack,
+        };
+    }
+    _createSequenceMessage(properties) {
+        // check minimum length to allow protocol to add items to the end of objects in future releases
+        if (properties.length < 1) {
+            throw new Error("Invalid payload for Sequence message.");
+        }
+        return {
+            sequenceId: properties[1],
+            type: signalr_1.MessageType.Sequence,
+        };
+    }
     _writeInvocation(invocationMessage) {
         let payload;
         if (invocationMessage.streamIds) {
@@ -223,7 +253,8 @@ class MessagePackHubProtocol {
         return BinaryMessageFormat_1.BinaryMessageFormat.write(payload.slice());
     }
     _writeCompletion(completionMessage) {
-        const resultKind = completionMessage.error ? this._errorResult : completionMessage.result ? this._nonVoidResult : this._voidResult;
+        const resultKind = completionMessage.error ? this._errorResult :
+            (completionMessage.result !== undefined) ? this._nonVoidResult : this._voidResult;
         let payload;
         switch (resultKind) {
             case this._errorResult:
@@ -240,6 +271,18 @@ class MessagePackHubProtocol {
     }
     _writeCancelInvocation(cancelInvocationMessage) {
         const payload = this._encoder.encode([signalr_1.MessageType.CancelInvocation, cancelInvocationMessage.headers || {}, cancelInvocationMessage.invocationId]);
+        return BinaryMessageFormat_1.BinaryMessageFormat.write(payload.slice());
+    }
+    _writeClose() {
+        const payload = this._encoder.encode([signalr_1.MessageType.Close, null]);
+        return BinaryMessageFormat_1.BinaryMessageFormat.write(payload.slice());
+    }
+    _writeAck(ackMessage) {
+        const payload = this._encoder.encode([signalr_1.MessageType.Ack, ackMessage.sequenceId]);
+        return BinaryMessageFormat_1.BinaryMessageFormat.write(payload.slice());
+    }
+    _writeSequence(sequenceMessage) {
+        const payload = this._encoder.encode([signalr_1.MessageType.Sequence, sequenceMessage.sequenceId]);
         return BinaryMessageFormat_1.BinaryMessageFormat.write(payload.slice());
     }
     _readHeaders(properties) {

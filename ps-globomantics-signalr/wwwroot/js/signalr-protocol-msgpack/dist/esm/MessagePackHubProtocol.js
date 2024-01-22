@@ -19,7 +19,7 @@ export class MessagePackHubProtocol {
         /** The name of the protocol. This is used by SignalR to resolve the protocol between the client and server. */
         this.name = "messagepack";
         /** The version of the protocol. */
-        this.version = 1;
+        this.version = 2;
         /** The TransferFormat of the protocol. */
         this.transferFormat = TransferFormat.Binary;
         this._errorResult = 1;
@@ -72,6 +72,12 @@ export class MessagePackHubProtocol {
                 return BinaryMessageFormat.write(SERIALIZED_PING_MESSAGE);
             case MessageType.CancelInvocation:
                 return this._writeCancelInvocation(message);
+            case MessageType.Close:
+                return this._writeClose();
+            case MessageType.Ack:
+                return this._writeAck(message);
+            case MessageType.Sequence:
+                return this._writeSequence(message);
             default:
                 throw new Error("Invalid message type.");
         }
@@ -96,6 +102,10 @@ export class MessagePackHubProtocol {
                 return this._createPingMessage(properties);
             case MessageType.Close:
                 return this._createCloseMessage(properties);
+            case MessageType.Ack:
+                return this._createAckMessage(properties);
+            case MessageType.Sequence:
+                return this._createSequenceMessage(properties);
             default:
                 // Future protocol changes can add message types, old clients can ignore them
                 logger.log(LogLevel.Information, "Unknown message type '" + messageType + "' ignored.");
@@ -190,6 +200,26 @@ export class MessagePackHubProtocol {
         };
         return completionMessage;
     }
+    _createAckMessage(properties) {
+        // check minimum length to allow protocol to add items to the end of objects in future releases
+        if (properties.length < 1) {
+            throw new Error("Invalid payload for Ack message.");
+        }
+        return {
+            sequenceId: properties[1],
+            type: MessageType.Ack,
+        };
+    }
+    _createSequenceMessage(properties) {
+        // check minimum length to allow protocol to add items to the end of objects in future releases
+        if (properties.length < 1) {
+            throw new Error("Invalid payload for Sequence message.");
+        }
+        return {
+            sequenceId: properties[1],
+            type: MessageType.Sequence,
+        };
+    }
     _writeInvocation(invocationMessage) {
         let payload;
         if (invocationMessage.streamIds) {
@@ -220,7 +250,8 @@ export class MessagePackHubProtocol {
         return BinaryMessageFormat.write(payload.slice());
     }
     _writeCompletion(completionMessage) {
-        const resultKind = completionMessage.error ? this._errorResult : completionMessage.result ? this._nonVoidResult : this._voidResult;
+        const resultKind = completionMessage.error ? this._errorResult :
+            (completionMessage.result !== undefined) ? this._nonVoidResult : this._voidResult;
         let payload;
         switch (resultKind) {
             case this._errorResult:
@@ -237,6 +268,18 @@ export class MessagePackHubProtocol {
     }
     _writeCancelInvocation(cancelInvocationMessage) {
         const payload = this._encoder.encode([MessageType.CancelInvocation, cancelInvocationMessage.headers || {}, cancelInvocationMessage.invocationId]);
+        return BinaryMessageFormat.write(payload.slice());
+    }
+    _writeClose() {
+        const payload = this._encoder.encode([MessageType.Close, null]);
+        return BinaryMessageFormat.write(payload.slice());
+    }
+    _writeAck(ackMessage) {
+        const payload = this._encoder.encode([MessageType.Ack, ackMessage.sequenceId]);
+        return BinaryMessageFormat.write(payload.slice());
+    }
+    _writeSequence(sequenceMessage) {
+        const payload = this._encoder.encode([MessageType.Sequence, sequenceMessage.sequenceId]);
         return BinaryMessageFormat.write(payload.slice());
     }
     _readHeaders(properties) {

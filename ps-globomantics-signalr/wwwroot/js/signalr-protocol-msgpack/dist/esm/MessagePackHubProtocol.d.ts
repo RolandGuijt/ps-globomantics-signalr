@@ -36,10 +36,15 @@ export declare class MessagePackHubProtocol implements IHubProtocol {
     private _createInvocationMessage;
     private _createStreamItemMessage;
     private _createCompletionMessage;
+    private _createAckMessage;
+    private _createSequenceMessage;
     private _writeInvocation;
     private _writeStreamInvocation;
     private _writeStreamItem;
     private _writeCompletion;
     private _writeCancelInvocation;
+    private _writeClose;
+    private _writeAck;
+    private _writeSequence;
     private _readHeaders;
 }
